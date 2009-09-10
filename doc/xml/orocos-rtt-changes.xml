@@ -45,10 +45,11 @@
       </listitem>
       <listitem>
 	<para>
-	  This release can only be compiled if you have CMake version 2.6.0
-	  or higher. If your distribution (like Debian Etch) does not support
-	  this look for a 'backports' version, or download and install a pre-built
-	  cmake package from www.cmake.org.
+	  This release can only be compiled if you have CMake version
+	  2.6.0 or higher. If your distribution (like Debian Etch)
+	  does not support this version, look for a 'backports'
+	  version or download and install a pre-built cmake package
+	  from www.cmake.org.
 	</para>
       </listitem>
       <listitem>
@@ -104,12 +105,6 @@
 	</listitem>
 	<listitem>
 	  <para>
-	    The system no longer waits for ever if it tries to stop an Activity
-	    which went into an infinite loop. Instead Activity::stop() will return false.
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
 	    The RTT has been reported to compile with Intel compilers (on Linux) as well.
 	  </para>
 	</listitem>
@@ -131,6 +126,21 @@
 	      containers.
 	    </para>
 	  </warning>
+	</listitem>
+      </itemizedlist>
+    </section>
+    <section>
+      <title>CORBA Transport</title>
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    A new variant of
+	    <classname>RTT::ApplicationServer</classname>::InitOrb has
+	    been added which uses the TAO Messaging service to allow
+	    to specify global time-outs for remote method calls. In case
+	    the TAO Messaging service is not available on your platform,
+	    the previous behaviour remains.
+	  </para>
 	</listitem>
       </itemizedlist>
     </section>

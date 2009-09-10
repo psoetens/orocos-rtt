@@ -69,6 +69,12 @@
 	  In case you want the pre-1.8.0 behaviour back (no default activity),
 	  disable ORO_ACT_DEFAULT_ACTIVITY in cmake. 
 	</para>
+	<para>
+	  At the same time, <classname>RTT::NonPeriodicActivity</classname> has been deprecated
+	  in favour of RTT::Activity and users of <classname>RTT::PeriodicActivity</classname>
+	  should switch to RTT::Activity as well, unless they fully understand
+	  the consequences of using RTT::PeriodicActivity.
+	</para>
       </listitem>
 	<listitem>
 	  <para>

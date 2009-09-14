@@ -232,7 +232,7 @@
 	</para>
       </section>
     </section>
-    <section id="basic-install">
+    <section id="basic-install-windows">
       <title>Basic Real-Time Toolkit Installation on Windows-like systems</title>
       <para>
 	We documented this on the on-line wiki for the various flavours/options 

@@ -102,6 +102,7 @@ if(OROCOS_TARGET STREQUAL "xenomai")
   find_package(Xenomai REQUIRED)
 
   if(XENOMAI_FOUND)
+    list(APPEND OROCOS-RTT_USER_LINK_LIBS native ) # For libraries used in inline (fosi/template) code.
     list(APPEND OROCOS-RTT_INCLUDE_DIRS ${XENOMAI_INCLUDE_DIRS} )
     list(APPEND OROCOS-RTT_LIBRARIES ${XENOMAI_LIBRARIES} pthread dl) 
     list(APPEND OROCOS-RTT_DEFINITIONS "OROCOS_TARGET=${OROCOS_TARGET}") 
@@ -257,6 +258,9 @@ if (ENABLE_CORBA)
 	    if( TAO_Messaging_FOUND )
 	      SET(CORBA_TAO_HAS_MESSAGING 1)
 	    endif()
+
+	    # Including a TAO header is sufficient to depend on this library.
+	    set(CORBA_USER_LINK_LIBS TAO_PortableServer)
 
         ENDIF(NOT TAO_FOUND)
     ELSEIF(${CORBA_IMPLEMENTATION} STREQUAL "OMNIORB")

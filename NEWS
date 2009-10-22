@@ -1,3 +1,26 @@
+           The Orocos Real-Time Toolkit v1.10.1.
+           ====================================
+
+The Orocos development team is pleased to announce first bug fix
+release of the Real-Time Toolkit v1.10, a C++ toolkit for building
+component based, real-time robotics and machine control applications.
+
+You can download this release from
+  <http://www.orocos.org/stable/rtt/v1.10.1/orocos-rtt-1.10.1-src.tar.bz2>
+and read the installation instructions on
+  <http://www.orocos.org/stable/documentation/rtt/v1.10.x/doc-xml/orocos-installation.html>
+
+Most prominent fixes are:
+ * Fixed some unit tests under LXRT
+ * Corrected priority checks on Mac OS X 
+ * Fixed wrong order of multiplication/division in scripting (bug #664)
+ * Fix crash/bug in scripting where parsers enters infinite recursion
+ * Fix linking with Xenomai when using the orocos-rtt-xenomai.pc file
+ * Fix: building RTT with mingw. Based on suggestions on Orocos-dev ML.
+ * Fixed install instructions after angry user feedback. Users should be
+   aware of the use of CMAKE_INCLUDE_PATH and CMAKE_LIBRARY_PATH to specify
+   where their libraries are installed in non-standard locations.
+
            The Orocos Real-Time Toolkit v1.10.0.
            ====================================
 

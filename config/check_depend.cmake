@@ -45,15 +45,15 @@ endif()
 
 
 # Look for boost
-find_package(Boost 1.33)
-find_package(Boost 1.33 COMPONENTS program_options)
-find_package(Boost 1.33 COMPONENTS thread)
+find_package(Boost 1.33 REQUIRED)
+find_package(Boost 1.33 COMPONENTS program_options thread)
 
 if(Boost_FOUND)
+  message("Boost found in ${Boost_INCLUDE_DIR}")
   list(APPEND OROCOS-RTT_INCLUDE_DIRS ${Boost_INCLUDE_DIR} )
   # We don't link with boost here. It depends on the options set by the user.
   #list(APPEND OROCOS-RTT_LIBRARIES ${Boost_LIBRARIES} )
-endif(Boost_FOUND)
+endif()
 
 # Look for Xerces 
 
@@ -180,7 +180,7 @@ if(OROCOS_TARGET STREQUAL "win32")
   if (MINGW)
     #--enable-all-export and --enable-auto-import are already set by cmake.
     #but we need it here for the unit tests as well.
-    set(CMAKE_LD_FLAGS_ADD "--enable-auto-import" CACHE INTERNAL "")
+    set(CMAKE_LD_FLAGS_ADD "-Wl,--enable-auto-import" CACHE INTERNAL "")
   endif()
   if (MSVC)
     set(CMAKE_CXX_FLAGS_ADD "/wd 4355 /wd 4251 /wd 4180")

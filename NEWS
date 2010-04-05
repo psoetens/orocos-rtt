@@ -1,3 +1,23 @@
+           The Orocos Real-Time Toolkit v1.10.3.
+           ====================================
+
+The Orocos development team is pleased to announce the third bug fix
+release of the Real-Time Toolkit v1.10, a C++ toolkit for building
+component based, real-time robotics and machine control applications.
+
+You can download this release from
+  <http://www.orocos.org/stable/rtt/v1.10.3/orocos-rtt-1.10.3-src.tar.bz2>
+and read the installation instructions on
+  <http://www.orocos.org/stable/documentation/rtt/v1.10.x/doc-xml/orocos-installation.html>
+
+Most prominent fixes are:
+ * Remote Commands over CORBA did not evaluate their arguments.
+ * Fix bug #737: Autosave adds unnecessary element when writing arrays.
+ * Plenty of cmake fixes wrt Omniorb/TAO detection logic.
+ * Fix bug #759: ControlTaskServer::CleanupServer causing segfault.
+ * Improve compatibility with recent Xenomai releases.
+ * Fix bug in ListLockFree where initial size was ignored.
+
            The Orocos Real-Time Toolkit v1.10.2.
            ====================================
 

@@ -51,7 +51,6 @@ endif()
 
 # Look for boost
 find_package(Boost 1.33 REQUIRED)
-find_package(Boost 1.33 COMPONENTS program_options thread)
 
 if(Boost_FOUND)
   message("Boost found in ${Boost_INCLUDE_DIR}")
@@ -143,8 +142,10 @@ endif()
 if(OROCOS_TARGET STREQUAL "macosx")
   set(OROPKG_OS_MACOSX TRUE CACHE INTERNAL "This variable is exported to the rtt-config.h file to expose our target choice to the code." FORCE)
 
-  find_package(Boost 1.33 COMPONENTS thread REQUIRED)
+  find_package(Boost 1.33 REQUIRED thread)
   list(APPEND OROCOS-RTT_INCLUDE_DIRS ${Boost_thread_INCLUDE_DIRS} )
+  # add to list of libraries in pkgconfig file
+  LIST(APPEND OROCOS-RTT_USER_LINK_LIBS ${Boost_THREAD_LIBRARY})
 
   message( "Forcing ORO_OS_USE_BOOST_THREAD to ON")
   set( ORO_OS_USE_BOOST_THREAD ON CACHE BOOL "Forced enable use of Boost.thread on macosx." FORCE)

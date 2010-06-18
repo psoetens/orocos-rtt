@@ -148,9 +148,9 @@ namespace RTT
                 } catch (...) {}
             
                 if (CORBA::is_nil( rootNC ) ) {
+
                     log(Warning) << "ControlTask '"<< taskc->getName() << "' could not find CORBA Naming Service."<<endlog();
                     log() <<"Writing IOR to 'std::cerr' and file '" << taskc->getName() <<".ior'"<<endlog();
-
                     // this part only publishes the IOR to a file.
                     CORBA::String_var ior = orb->object_to_string( mtask.in() );
                     std::cerr << ior.in() <<std::endl;

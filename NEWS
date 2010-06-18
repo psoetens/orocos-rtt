@@ -1,3 +1,23 @@
+           The Orocos Real-Time Toolkit v1.10.4.
+           ====================================
+
+The Orocos development team is pleased to announce the fourth bug fix
+release of the Real-Time Toolkit v1.10, a C++ toolkit for building
+component based, real-time robotics and machine control applications.
+
+You can download this release from
+  <http://www.orocos.org/stable/rtt/v1.10.4/orocos-rtt-1.10.4-src.tar.bz2>
+and read the installation instructions on
+  <http://www.orocos.org/stable/documentation/rtt/v1.10.x/doc-xml/orocos-installation.html>
+
+Most prominent fixes are:
+ * Crash fix in scripting when assigning to array elements
+ * Fix compilation issue with GCC 4.5
+ * Better Xenomai 2.4/2.5 detection and linking
+ * win32: build fixes
+ * Many misc improvements to the cmake build configuration for
+   various platforms
+
            The Orocos Real-Time Toolkit v1.10.3.
            ====================================
 

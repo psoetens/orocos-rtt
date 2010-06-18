@@ -15,6 +15,7 @@ Most prominent fixes are:
  * Fix compilation issue with GCC 4.5
  * Better Xenomai 2.4/2.5 detection and linking
  * win32: build fixes
+ * macosx: fixes in timing functions of fosi layer
  * Many misc improvements to the cmake build configuration for
    various platforms
 

@@ -38,6 +38,26 @@
 
 #include "CommandExecFunction.hpp"
 
-namespace RTT
+using namespace RTT;
+using namespace detail;
+
+CommandExecFunction::CommandExecFunction( CommandInterface* init_com,
+		                                  boost::shared_ptr<ProgramInterface> foo, ProgramProcessor* p,
+									      AssignableDataSource<ProgramInterface*>* v,
+									      AssignableDataSource<bool>* a )
+: minit(init_com),
+_proc(p),
+_v( v==0 ? new UnboundDataSource< ValueDataSource<ProgramInterface*> >(foo.get()) : v ),
+_foo( foo ), isqueued(false), maccept( a ? a : new UnboundDataSource<ValueDataSource<bool> >(false) )
 {
+}
+
+CommandExecFunction::~CommandExecFunction() {
+	if ( _foo->isRunning() ) {
+		log(Warning) << "Stopping Function running in ProgramProcessor !" << endlog();
+	}
+	if ( _foo->getProgramProcessor() != 0 ) // ie if _foo->isLoaded().
+		if ( _proc->removeFunction( _foo.get() ) == false ) {
+		    log(Error) << "Failed to remove running function from ProgramPorcessor !" << endlog();
+		}
 }

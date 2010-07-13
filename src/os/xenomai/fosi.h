@@ -307,6 +307,18 @@ static inline int rtos_nanosleep(const TIME_SPEC *rqtp, TIME_SPEC *rmtp)
         return rt_mutex_release(m);
     }
 
+    static inline void rtos_enable_rt_warning()
+    {
+        CHK_XENO_CALL();
+	rt_task_set_mode(0, T_WARNSW, NULL);
+    }
+
+    static inline void rtos_disable_rt_warning()
+    {
+        CHK_XENO_CALL();
+	rt_task_set_mode(T_WARNSW, 0, NULL);
+    }
+
 #define rtos_printf printf
 
 #ifdef __cplusplus

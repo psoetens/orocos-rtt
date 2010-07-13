@@ -176,6 +176,9 @@ namespace RTT
                                            void * (*start_routine)(void *),
                                            ThreadInterface* obj)
         {
+            // Xenomai would allocate only 32KB.
+            if (stack_size == 0)
+                stack_size = 256*1024; // We need 128KB for scripting and everything going through boost, so this seems a safe default.
             rtos_task_check_priority(&sched_type, &priority);
             XenoCookie* xcookie = (XenoCookie*)malloc( sizeof(XenoCookie) );
             xcookie->data = obj;
@@ -231,9 +234,14 @@ namespace RTT
 
         // correct priority
         // Hard & Soft:
-        if (*priority <= 0){
-            log(Warning) << "Forcing priority ("<<*priority<<") of thread to 1." <<endlog();
-            *priority = 1;
+#if ((CONFIG_XENO_VERSION_MAJOR*10000)+(CONFIG_XENO_VERSION_MINOR*100)+CONFIG_XENO_REVISION_LEVEL) >= 20500
+        const int minprio = 0;
+#else
+        const int minprio = 1;
+#endif
+        if (*priority < minprio){
+            log(Warning) << "Forcing priority ("<<*priority<<") of thread to " << minprio <<"." <<endlog();
+            *priority = minprio;
             ret = -1;
         }
         if (*priority > 99){
@@ -247,7 +255,6 @@ namespace RTT
 
         // we could implement here the interrupt shield logic.
         INTERNAL_QUAL int rtos_task_set_scheduler(RTOS_TASK* t, int sched_type) {
-            Logger::In in( t->name );
             // xenoptr was initialised from the thread wrapper.
             if (t->xenoptr != rt_task_self() ) {
                 return -1;

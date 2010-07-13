@@ -18,6 +18,7 @@ Most prominent fixes are:
  * macosx: fixes in timing functions of fosi layer
  * Many misc improvements to the cmake build configuration for
    various platforms
+ * Added opt-in mode switch detection for Xenomai. See rtos_enable_rt_warning().
 
            The Orocos Real-Time Toolkit v1.10.3.
            ====================================

@@ -115,7 +115,7 @@ namespace RTT
     {
       parse( parsebegin, parseend, parser.parser(), SKIP_PARSER );
     }
-    catch( const parse_exception& e )
+    catch( const parse_exception& )
     {
       throw;
     }
@@ -143,7 +143,7 @@ namespace RTT
     {
         parse( parsebegin, parseend, parser.parser(), SKIP_PARSER );
     }
-    catch( const parse_exception& e )
+    catch( const parse_exception& )
     {
         throw;
     }
@@ -172,7 +172,7 @@ namespace RTT
     {
         parse( parsebegin, parseend, parser.variableChangeParser(), SKIP_PARSER );
     }
-    catch( const parse_exception& e )
+    catch( const parse_exception& )
     {
         throw;
     }
@@ -207,7 +207,7 @@ namespace RTT
       if ( ! ret.hit )
         throw parse_exception_parser_fail();
     }
-    catch( const parse_exception& e )
+    catch( const parse_exception& )
     {
       // hm, no reason to catch here really
       throw;

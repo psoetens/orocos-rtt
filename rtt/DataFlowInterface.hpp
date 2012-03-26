@@ -107,9 +107,11 @@ namespace RTT
          * add a Service with the same name of the port.
          * @param name The name to give to the port.
          * @param port The port to add.
-         * @param callback (Optional) provide a function which will be called asynchronously
-         * when new data arrives on this port. You can add more functions by using the port
-         * directly using base::PortInterface::getNewDataOnPort().
+         * @param callback (Optional) provide a function which will be called \b inSstead of updateHook()
+         * when new data arrives on this port. This must be a function returning void and taking a base::PortInterface*
+         * as its single argument. See the boost::function documentation for allowed syntax.
+         * @see SlotFunction
+         * @return \a port
          */
         base::InputPortInterface& addEventPort(const std::string& name, base::InputPortInterface& port, SlotFunction callback = SlotFunction() ) {
             if ( !chkPtr("addEventPort", name, &port) ) return port;
@@ -123,10 +125,10 @@ namespace RTT
          * When data arrives on this port your TaskContext will be woken up
          * and updateHook will be executed.
          * @param port The port to add.
-         * @param callback (Optional) provide a function which will be called
-         * when new data arrives on this port. The callback function will
-         * be called in sequence with updateHook(), so asynchronously with
-         * regard to the arrival of data on the port.
+         * @param callback (Optional) provide a function which will be called \b instead of updateHook()
+         * when new data arrives on this port. This must be a function returning void and taking a base::PortInterface*
+         * as its single argument. See the boost::function documentation for allowed syntax.
+         * @see SlotFunction
          * @return \a port
          */
         base::InputPortInterface& addEventPort(base::InputPortInterface& port, SlotFunction callback = SlotFunction() );

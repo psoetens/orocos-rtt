@@ -469,7 +469,7 @@ namespace RTT
          * mechanism in the future and currently serves to handle
          * event ports callbacks.
          */
-        virtual void prepareUpdateHook();
+        virtual bool prepareUpdateHook();
     };
 }}
 

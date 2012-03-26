@@ -534,15 +534,20 @@ namespace RTT
             return ports()->addPort(port);
         }
 
+        /**
+         * The function signature of a function replacing updateHook() in case
+         * of event ports. For example: void processMyData(base::PortInterface*) { ... }
+         */
         typedef boost::function<void(base::PortInterface*)> SlotFunction;
         /**
          * Name and add an Event triggering Port to the interface of this task and
          * add a Service with the same name of the port.
          * @param name The name to give to the port.
          * @param port The port to add.
-         * @param callback (Optional) provide a function which will be called asynchronously
-         * when new data arrives on this port. You can add more functions by using the port
-         * directly using base::PortInterface::getNewDataOnPort().
+         * @param callback (Optional) provide a function which will be called \b instead of updateHook()
+         * when new data arrives on this port. This must be a function returning void and taking a base::PortInterface*
+         * as its single argument. See the boost::function documentation for allowed syntax.
+         * @see SlotFunction
          */
         base::InputPortInterface& addEventPort(const std::string& name, base::InputPortInterface& port, SlotFunction callback = SlotFunction() ) {
             port.setName(name);
@@ -553,9 +558,10 @@ namespace RTT
          * Add an Event triggering Port to the interface of this task and
          * add a Service with the same name of the port.
          * @param port The port to add.
-         * @param callback (Optional) provide a function which will be called asynchronously
-         * when new data arrives on this port. You can add more functions by using the port
-         * directly using base::PortInterface::getNewDataOnPort().
+         * @param callback (Optional) provide a function which will be called \b instead of updateHook()
+         * when new data arrives on this port. This must be a function returning void and taking a base::PortInterface*
+         * as its single argument. See the boost::function documentation for allowed syntax.
+         * @see SlotFunction
          */
         base::InputPortInterface& addEventPort(base::InputPortInterface& port, SlotFunction callback = SlotFunction() ) {
             return ports()->addEventPort(port,callback);
@@ -654,8 +660,10 @@ namespace RTT
         /**
          * Function that is called before updateHook, where the TC implementation
          * can do bookkeeping with regard to event ports.
+         * @return true if updateHook() \b must be called in order to process events
+         * for which no callback was defined.
          */
-        void prepareUpdateHook();
+        bool prepareUpdateHook();
 
         /**
          * Check if this component could provide a given service,

@@ -421,7 +421,7 @@ namespace RTT
     void TaskContext::dataOnPort(PortInterface* port)
     {
         portqueue->enqueue( port );
-        this->engine()->triggerTask();
+        this->engine()->triggerEngine();
     }
 
     void TaskContext::dataOnPortCallback(InputPortInterface* port, TaskContext::SlotFunction callback) {
@@ -438,15 +438,19 @@ namespace RTT
         }
     }
 
-    void TaskContext::prepareUpdateHook()
+    bool TaskContext::prepareUpdateHook()
     {
         MutexLock lock(mportlock);
         PortInterface* port = 0;
+        bool fallback_on_updateHook=false;
         while ( portqueue->dequeue( port ) == true ) {
             UserCallbacks::iterator it = user_callbacks.find(port);
             if (it != user_callbacks.end() )
                 it->second(port); // fire the user callback
+            else
+            	fallback_on_updateHook=true;
         }
+        return fallback_on_updateHook;
     }
 }
 

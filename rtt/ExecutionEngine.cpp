@@ -339,18 +339,17 @@ namespace RTT
     void ExecutionEngine::step() {
         processMessages();
         processFunctions();
-        if ( user_trigger )
-        	processChildren(); // resets user_trigger flag.
+        processChildren(user_trigger); // resets user_trigger flag.
     }
 
-    void ExecutionEngine::processChildren() {
+    void ExecutionEngine::processChildren(bool update_tasks) {
         // only call updateHook in the Running state.
         if ( taskc ) {
             // A trigger() in startHook() will be ignored, we trigger in TaskCore after startHook finishes.
             if ( taskc->mTaskState == TaskCore::Running && taskc->mTargetState == TaskCore::Running ) {
                 try {
-                    taskc->prepareUpdateHook();
-                    taskc->updateHook();
+                    if (taskc->prepareUpdateHook() || update_tasks)
+                    	taskc->updateHook();
                 } catch(std::exception const& e) {
                     log(Error) << "in updateHook(): switching to exception state because of unhandled exception" << endlog();
                     log(Error) << "  " << e.what() << endlog();
@@ -376,7 +375,8 @@ namespace RTT
         }
 
         // reset before we leave this function ! Only reset after processChildren certainly executed !
-        user_trigger=false;
+        if (update_tasks)
+        	user_trigger=false;
 
         if ( !this->getActivity() || ! this->getActivity()->isRunning() ) return;
 
@@ -384,8 +384,8 @@ namespace RTT
         for (std::vector<TaskCore*>::iterator it = children.begin(); it != children.end();++it) {
             if ( (*it)->mTaskState == TaskCore::Running  && (*it)->mTargetState == TaskCore::Running )
                 try {
-                    (*it)->prepareUpdateHook();
-                    (*it)->updateHook();
+                    if ((*it)->prepareUpdateHook() || update_tasks)
+                    	(*it)->updateHook();
                 } catch(std::exception const& e) {
                     log(Error) << "in updateHook(): switching to exception state because of unhandled exception" << endlog();
                     log(Error) << "  " << e.what() << endlog();

@@ -299,7 +299,8 @@ namespace RTT {
     void TaskCore::errorHook() {
     }
 
-    void TaskCore::prepareUpdateHook() {
+    bool TaskCore::prepareUpdateHook() {
+    	return false;
     }
 
     void TaskCore::updateHook()

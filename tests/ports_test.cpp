@@ -570,7 +570,45 @@ BOOST_AUTO_TEST_CASE(testPortAddRemove)
     tc.start();
     tc.stop();
 }
+/**
+ * Checks calling updateHook() for an event port
+ * which has no callback installed.
+ */
+BOOST_AUTO_TEST_CASE(testEventPortUpdateHook)
+{
+    OutputPort<double> wp1("Write");
+    InputPort<double>  rp1("Read");
 
+    tce->start();
+    tce->resetStats();
+
+    // Not adding a callback so call updateHook()
+    tce->addEventPort(rp1);
+
+    wp1.createConnection(rp1, ConnPolicy::data());
+    wp1.write(0.1);
+    BOOST_CHECK(tce->had_event);
+    tce->resetStats();
+
+    wp1.disconnect();
+    wp1.createConnection(rp1, ConnPolicy::buffer(2));
+    // send two items into the buffer
+    wp1.write(0.1);
+    BOOST_CHECK(tce->had_event);
+    tce->resetStats();
+    wp1.write(0.1);
+    BOOST_CHECK(tce->had_event);
+    tce->resetStats();
+    // test buffer full:
+    wp1.write(0.1);
+    BOOST_CHECK( !tce->had_event);
+    tce->resetStats();
+}
+
+/**
+ * Checks NOT calling updateHook() for an event port
+ * which has a callback installed.
+ */
 BOOST_AUTO_TEST_CASE(testEventPortSignalling)
 {
     OutputPort<double> wp1("Write");
@@ -579,15 +617,14 @@ BOOST_AUTO_TEST_CASE(testEventPortSignalling)
     tce->start();
     tce->resetStats();
 
+    // adding a callback does not call updateHook()
     tce->addEventPort(rp1,boost::bind(&PortsTestFixture::new_data_listener, this, _1) );
-
-
 
     wp1.createConnection(rp1, ConnPolicy::data());
     signalled_port = 0;
     wp1.write(0.1);
     BOOST_CHECK(&rp1 == signalled_port);
-    BOOST_CHECK(tce->had_event);
+    BOOST_CHECK(!tce->had_event);
     tce->resetStats();
 
     wp1.disconnect();
@@ -596,12 +633,12 @@ BOOST_AUTO_TEST_CASE(testEventPortSignalling)
     signalled_port = 0;
     wp1.write(0.1);
     BOOST_CHECK(&rp1 == signalled_port);
-    BOOST_CHECK(tce->had_event);
+    BOOST_CHECK(!tce->had_event);
     tce->resetStats();
     signalled_port = 0;
     wp1.write(0.1);
     BOOST_CHECK(&rp1 == signalled_port);
-    BOOST_CHECK(tce->had_event);
+    BOOST_CHECK(!tce->had_event);
     tce->resetStats();
     signalled_port = 0;
     // test buffer full:

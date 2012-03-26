@@ -273,7 +273,7 @@ namespace RTT
 
         void processMessages();
         void processFunctions();
-        void processChildren();
+        void processChildren(bool update_tasks);
 
         virtual bool initialize();
 

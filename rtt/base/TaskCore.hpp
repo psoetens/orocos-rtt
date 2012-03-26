@@ -275,7 +275,7 @@ namespace RTT
 
         /**
          * Invoke this method to \a execute
-         * the ExecutionEngine and the update() method.
+         * the ExecutionEngine and the updateHook() method synchronously
          * @retval false if this->engine()->getActivity()->execute() == false
          * @retval true otherwise.
          */
@@ -283,7 +283,8 @@ namespace RTT
 
         /**
          * Invoke this method to \a trigger the thread of this TaskContext to execute
-         * its ExecutionEngine and the update() method.
+         * its ExecutionEngine and the updateHook() method. This may be synchronously
+         * or asynchronously, depending on the activity of this TaskContext.
          * @retval false if this->engine()->getActivity()->trigger() == false
          * @retval true otherwise.
          */

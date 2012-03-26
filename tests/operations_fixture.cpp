@@ -36,10 +36,10 @@ OperationsFixture::OperationsFixture()
 {
     ret = 0.0;
     i = -1;
-    tc = new TaskContext("root");
+    tc = new OperationsContext("root");
     this->createOperationCallerFactories(tc);
     tc->provides()->addAttribute("ret", ret );
-    caller = new TaskContext("caller");
+    caller = new OperationsContext("caller");
     caller->start();
     tc->start();
 }
@@ -47,6 +47,7 @@ OperationsFixture::OperationsFixture()
 OperationsFixture::~OperationsFixture()
 {
     tc->stop();
+    caller->stop();
     delete tc;
     delete caller;
 }

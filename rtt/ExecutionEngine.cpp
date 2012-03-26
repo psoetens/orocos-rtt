@@ -69,7 +69,8 @@ namespace RTT
     ExecutionEngine::ExecutionEngine( TaskCore* owner )
         : taskc(owner),
           mqueue(new MWSRQueue<DisposableInterface*>(ORONUM_EE_MQUEUE_SIZE) ),
-          f_queue( new MWSRQueue<ExecutableInterface*>(ORONUM_EE_MQUEUE_SIZE) )
+          f_queue( new MWSRQueue<ExecutableInterface*>(ORONUM_EE_MQUEUE_SIZE) ),
+          user_trigger(false)
     {
     }
 
@@ -138,7 +139,7 @@ namespace RTT
             f->loaded(this);
             bool result = f_queue->enqueue( f );
             // signal work is to be done:
-            this->getActivity()->trigger();
+            this->triggerEngine();
             return result;
         }
         return false;
@@ -205,7 +206,6 @@ namespace RTT
     }
 
     bool ExecutionEngine::initialize() {
-        // nop
         return true;
     }
 
@@ -243,11 +243,31 @@ namespace RTT
             if (taskc && taskc->mTaskState == TaskCore::FatalError )
                 return false;
             bool result = mqueue->enqueue( c );
-            this->getActivity()->trigger();
+            this->triggerEngine();
             msg_cond.broadcast(); // required for waitAndProcessMessages() (EE thread)
             return result;
         }
         return false;
+    }
+
+    bool ExecutionEngine::triggerEngine()
+    {
+    	// trigger internally.
+    	if ( this->getActivity() && this->getActivity()->trigger() ) {
+    		return true;
+    	}
+    	return false;
+    }
+
+    bool ExecutionEngine::triggerTask()
+    {
+    	// user-side trigger
+    	user_trigger=true;
+    	if ( triggerEngine() ) {
+    		return true;
+    	}
+    	user_trigger=false;
+    	return false;
     }
 
     void ExecutionEngine::waitForMessages(const boost::function<bool(void)>& pred)
@@ -319,7 +339,8 @@ namespace RTT
     void ExecutionEngine::step() {
         processMessages();
         processFunctions();
-        processChildren(); // aren't these ExecutableInterfaces ie functions ?
+        if ( user_trigger )
+        	processChildren(); // resets user_trigger flag.
     }
 
     void ExecutionEngine::processChildren() {
@@ -353,11 +374,15 @@ namespace RTT
                 }
             }
         }
+
+        // reset before we leave this function ! Only reset after processChildren certainly executed !
+        user_trigger=false;
+
         if ( !this->getActivity() || ! this->getActivity()->isRunning() ) return;
 
         // call all children as well.
         for (std::vector<TaskCore*>::iterator it = children.begin(); it != children.end();++it) {
-            if ( (*it)->mTaskState == TaskCore::Running  && (*it)->mTargetState == TaskCore::Running  )
+            if ( (*it)->mTaskState == TaskCore::Running  && (*it)->mTargetState == TaskCore::Running )
                 try {
                     (*it)->prepareUpdateHook();
                     (*it)->updateHook();

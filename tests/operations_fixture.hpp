@@ -27,6 +27,19 @@ using namespace boost;
 using namespace RTT;
 using namespace RTT::detail;
 
+class RTT_UNIT_API OperationsContext : public TaskContext {
+public:
+	OperationsContext(std::string name) : TaskContext(name), called(0) {}
+	int called;
+	bool startHook() {
+		called = 0;
+		return true;
+	}
+	void updateHook() {
+		called++;
+	}
+};
+
 /**
  * A test fixture that registers some operations to a tc
  * and provides also a caller tc.
@@ -35,7 +48,7 @@ class RTT_UNIT_API OperationsFixture {
 public:
     OperationsFixture();
 
-    TaskContext* tc, *caller;
+    OperationsContext* tc, *caller;
 
     // ref/const-ref tests:
     double ret;

@@ -116,7 +116,7 @@ namespace RTT
          * between step()s or loop().
          *
          * @return true if the message got accepted, false otherwise.
-         * @return false when the MessageProcessor is not running or does not accept messages.
+         * @return false when the ExecutionEngine is not running or does not accept messages.
          * @see acceptMessages
          */
         virtual bool process(base::DisposableInterface* c);
@@ -124,7 +124,7 @@ namespace RTT
         /**
          * Run a given function in step() or loop(). The function may only
          * be destroyed after the
-         * ExecutionEngine is stopped or removeFunction() was invoked. The number of functions the Processor can
+         * ExecutionEngine is stopped or removeFunction() was invoked. The number of functions the ExecutionEngine can
          * run in parallel can be increased with setMaxFunctions().
          * @return false if the Engine is not running or the 'pending' queue is full.
          * @see removeFunction(), setMaxFunctions()
@@ -177,6 +177,22 @@ namespace RTT
          */
         bool stopTask(base::TaskCore* task);
 
+        /**
+         * Triggers the execution of this engine \b without calling the user's
+         * updateHook() function. This is mainly used for internal bookkeeping
+         * activities. Users should use the TaskCore::trigger() function to
+         * trigger the execution of updateHook().
+         * @return true if the engine's activity was active and triggered.
+         */
+        bool triggerEngine();
+
+        /**
+         * Triggers the execution of this engine \b with calling the user's
+         * updateHook() function. Users should use the TaskCore::trigger() function to
+         * trigger the execution of updateHook().
+         * @return true if the engine's activity was active and triggered.
+         */
+        bool triggerTask();
 
         /**
          * Set the 'owner' task in the exception state.
@@ -245,6 +261,15 @@ namespace RTT
 
         os::Mutex msg_lock;
         os::Condition msg_cond;
+
+        /**
+         * Set by triggerEngine() to indicate the updateHook function must \b not be called.
+         */
+        bool internal_trigger;
+        /**
+         * Set by triggerTask() to indicate the updateHook function \b must be called.
+         */
+        bool user_trigger;
 
         void processMessages();
         void processFunctions();

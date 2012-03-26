@@ -57,6 +57,12 @@ BOOST_AUTO_TEST_CASE(testClientThreadOperationCaller)
     BOOST_CHECK_EQUAL( -8.0, m7(1, 2.0, true,"hello",5.0,'a',7) );
 
     BOOST_CHECK_THROW(m0e(), std::runtime_error);
+
+    tc->stop();
+    caller->stop();
+    // called only once due to tc->start()
+    BOOST_CHECK_EQUAL( 1, tc->called );
+    BOOST_CHECK_EQUAL( 1, caller->called );
 }
 
 BOOST_AUTO_TEST_CASE(testOwnThreadOperationCallerCall)
@@ -86,6 +92,13 @@ BOOST_AUTO_TEST_CASE(testOwnThreadOperationCallerCall)
 
     BOOST_CHECK_THROW( m0e(), std::runtime_error);
     BOOST_REQUIRE( tc->inException() );
+
+    tc->stop();
+    caller->stop();
+    // called only once due to tc->start()
+    BOOST_CHECK_EQUAL( 1, tc->called );
+    BOOST_CHECK_EQUAL( 1, caller->called );
+
 }
 
 BOOST_AUTO_TEST_CASE(testClientThreadOperationCallerSend)
@@ -175,6 +188,12 @@ BOOST_AUTO_TEST_CASE(testClientThreadOperationCallerSend)
     BOOST_CHECK_EQUAL( -6.0, h5.ret() );
     BOOST_CHECK_EQUAL( -7.0, h6.ret() );
     BOOST_CHECK_EQUAL( -8.0, h7.ret() );
+
+    tc->stop();
+    caller->stop();
+    // called only once due to tc->start()
+    BOOST_CHECK_EQUAL( 1, tc->called );
+    BOOST_CHECK_EQUAL( 1, caller->called );
 }
 
 BOOST_AUTO_TEST_CASE(testOwnThreadOperationCallerSend)
@@ -268,6 +287,12 @@ BOOST_AUTO_TEST_CASE(testOwnThreadOperationCallerSend)
     BOOST_CHECK_EQUAL( -6.0, h5.ret() );
     BOOST_CHECK_EQUAL( -7.0, h6.ret() );
     BOOST_CHECK_EQUAL( -8.0, h7.ret() );
+
+    tc->stop();
+    caller->stop();
+    // called only once due to tc->start()
+    BOOST_CHECK_EQUAL( 1, tc->called );
+    BOOST_CHECK_EQUAL( 1, caller->called );
 }
 
 BOOST_AUTO_TEST_CASE(testLocalOperationCallerFactory)

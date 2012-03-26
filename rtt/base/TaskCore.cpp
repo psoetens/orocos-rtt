@@ -95,9 +95,7 @@ namespace RTT {
 
     bool TaskCore::trigger()
     {
-        if ( !this->engine()->getActivity() )
-            return false;
-        return this->engine()->getActivity()->trigger();
+        return this->engine()->triggerTask();
     }
 
     bool TaskCore::configure() {

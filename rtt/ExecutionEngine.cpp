@@ -70,7 +70,7 @@ namespace RTT
         : taskc(owner),
           mqueue(new MWSRQueue<DisposableInterface*>(ORONUM_EE_MQUEUE_SIZE) ),
           f_queue( new MWSRQueue<ExecutableInterface*>(ORONUM_EE_MQUEUE_SIZE) ),
-          user_trigger(false)
+          internal_trigger(false), user_trigger(false)
     {
     }
 
@@ -253,7 +253,13 @@ namespace RTT
     bool ExecutionEngine::triggerEngine()
     {
     	// trigger internally.
-    	if ( this->getActivity() && this->getActivity()->trigger() ) {
+    	cout <<"Trigger ENGINE"<<endl;
+    	if ( this->getActivity() && this->getActivity()->allowsTrigger() ) {
+        	internal_trigger=true;
+        	if ( this->getActivity()->trigger() == false ) {
+        		internal_trigger=false;
+        		return false;
+        	}
     		return true;
     	}
     	return false;
@@ -263,7 +269,8 @@ namespace RTT
     {
     	// user-side trigger
     	user_trigger=true;
-    	if ( triggerEngine() ) {
+    	cout <<"Trigger USER"<<endl;
+    	if ( this->getActivity() && this->getActivity()->trigger() ) {
     		return true;
     	}
     	user_trigger=false;
@@ -337,12 +344,20 @@ namespace RTT
     }
 
     void ExecutionEngine::step() {
+    	// this is always executed to process pending jobs
+    	cout << "STEP" <<endl;
         processMessages();
         processFunctions();
-        processChildren(user_trigger); // resets user_trigger flag.
+        // this is executed only when the activity calls us ( user_trigger and internal_trigger both false)
+        // or when the user triggered us explicitly.
+        cout << "User: "<<user_trigger<< " Internal: "<<internal_trigger<<endl;
+        processChildren(!internal_trigger ); // resets user_trigger flag.
+    	internal_trigger=false;
     }
 
     void ExecutionEngine::processChildren(bool update_tasks) {
+    	if (update_tasks)
+    		cout << "->updateHook()" <<endl;
         // only call updateHook in the Running state.
         if ( taskc ) {
             // A trigger() in startHook() will be ignored, we trigger in TaskCore after startHook finishes.
@@ -373,10 +388,6 @@ namespace RTT
                 }
             }
         }
-
-        // reset before we leave this function ! Only reset after processChildren certainly executed !
-        if (update_tasks)
-        	user_trigger=false;
 
         if ( !this->getActivity() || ! this->getActivity()->isRunning() ) return;
 

@@ -223,6 +223,8 @@ namespace RTT { namespace extras {
          * descriptor, and returns true if the signalling was successful
          */
         virtual bool trigger();
+
+        virtual bool allowsTrigger();
     };
 }}
 

@@ -128,6 +128,10 @@ namespace RTT
         return Thread::isActive() ? Thread::start() : false;
     }
 
+    bool Activity::allowsTrigger() {
+        return Thread::isActive() ? !Thread::isPeriodic() : false;
+    }
+
     bool Activity::execute() {
         return false;
     }

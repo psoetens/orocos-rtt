@@ -112,6 +112,8 @@ namespace RTT
         bool execute();
 
         bool trigger();
+
+        bool allowsTrigger();
     private:
         bool running;
         bool active;

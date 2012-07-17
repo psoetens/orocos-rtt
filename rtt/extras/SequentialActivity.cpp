@@ -177,6 +177,11 @@ namespace RTT {
         return false;
     }
 
+    bool SequentialActivity::allowsTrigger()
+    {
+    	return true;
+    }
+
     bool SequentialActivity::execute()
     {
         return false;

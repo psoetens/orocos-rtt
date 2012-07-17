@@ -183,6 +183,13 @@ namespace RTT {
         return false;
     }
 
+    bool SlaveActivity::allowsTrigger()
+    {
+        if (mmaster)
+            return mmaster->allowsTrigger();
+        return false;
+    }
+
     bool SlaveActivity::execute()
     {
         // non periodic case.

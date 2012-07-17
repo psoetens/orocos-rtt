@@ -175,6 +175,11 @@ bool FileDescriptorActivity::start()
 bool FileDescriptorActivity::trigger()
 { return write(m_interrupt_pipe[1], &CMD_TRIGGER, 1) == 1; }
 
+bool FileDescriptorActivity::allowsTrigger()
+{
+	return true;
+}
+
 struct fd_watch {
     int& fd;
     fd_watch(int& fd) : fd(fd) {}

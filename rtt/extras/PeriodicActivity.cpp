@@ -192,6 +192,11 @@ namespace RTT {
         return false;
     }
 
+    bool PeriodicActivity::allowsTrigger()
+    {
+        return false;
+    }
+
     void PeriodicActivity::step()
     {
         // override this method to avoid running runner.

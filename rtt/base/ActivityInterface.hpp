@@ -212,6 +212,12 @@ namespace RTT
         virtual bool trigger() = 0;
 
         /**
+         * Returns true if trigger may be called on this activity.
+         * @return
+         */
+        virtual bool allowsTrigger() = 0;
+
+        /**
          * Returns a pointer to the thread which will
          * run this activity. Will not be null.
          */

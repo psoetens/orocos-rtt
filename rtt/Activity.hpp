@@ -149,6 +149,8 @@ namespace RTT
 
         virtual bool trigger();
 
+        virtual bool allowsTrigger();
+
         virtual bool stop();
 
         virtual bool isRunning() const;

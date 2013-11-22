@@ -89,8 +89,8 @@ namespace RTT {
             if (ret == -1) {
                 // a timer expired
                 // First: reset/reprogram the timer that expired:
+                MutexLock locker(m);
                 {
-                    MutexLock locker(m);
                     // detect corner case for resize:
                     if ( next_timer_id < int(mtimers.size()) ) {
                         // now clear or reprogram it.

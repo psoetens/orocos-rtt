@@ -75,7 +75,7 @@ namespace RTT
         TimeService* mTimeserv;
         base::ActivityInterface* mThread;
         Semaphore msem;
-        mutable Mutex m;
+        mutable MutexRecursive m;
         typedef TimeService::nsecs Time;
         /**
          * Index in vector is the timer id.
@@ -115,6 +115,9 @@ namespace RTT
         /**
          * This function is called each time an armed or periodic timer expires.
          * The user must implement this method to catch the time outs.
+         * @note all other Timer functions synchronise with this function.
+         * It's allowed to reprogram the timer from within timeout(), but any
+         * external thread will be blocked until timeout() returns.
          * @param timer_id The number of the timer that expired.
          */
         virtual void timeout(TimerId timer_id);
@@ -122,6 +125,10 @@ namespace RTT
         /**
          * Change the maximum number of timers in this object.
          * Any added timer with id >= \a max will be removed.
+         * @note This function synchronises with timeout().
+         * In case timeout() is executing, and this function is called from another thread, 
+         * this function will block until timeout() finished executing.
+         * In case this function is called called from within the timeout() thread, it will not block.
          */
         void setMaxTimers(TimerId max);
 
@@ -132,6 +139,10 @@ namespace RTT
          * @param period The period when the timer should expire.
          * This is a floating point number.
          * @see killTimer to disable it again.
+         * @note This function synchronises with timeout().
+         * In case timeout() is executing, and this function is called from another thread, 
+         * this function will block until timeout() finished executing.
+         * In case this function is called called from within the timeout() thread, it will not block.
          */
         bool startTimer(TimerId timer_id, Seconds period);
 
@@ -141,6 +152,10 @@ namespace RTT
          * @param wait_time The time in seconds from now, when the
          * timer should expire. This is a floating point number.
          * @see killTimer to disable it before it fires.
+         * @note This function synchronises with timeout().
+         * In case timeout() is executing, and this function is called from another thread, 
+         * this function will block until timeout() finished executing.
+         * In case this function is called called from within the timeout() thread, it will not block.
          */
         bool arm(TimerId timer_id, Seconds wait_time);
 
@@ -148,18 +163,30 @@ namespace RTT
          * Returns the remaining time before this timer elapses.
          * @retval 0.0 if the timer is not armed or has already elapsed.
          * @return the remaining time in seconds.
+         * @note This function synchronises with timeout().
+         * In case timeout() is executing, and this function is called from another thread, 
+         * this function will block until timeout() finished executing.
+         * In case this function is called called from within the timeout() thread, it will not block.
          */
         TimeService::Seconds timeRemaining(TimerId timer_id) const;
 
         /**
          * Check if a given timer id is armed.
          * @param timer_id The number of the timer, starting from zero.
+         * @note This function synchronises with timeout().
+         * In case timeout() is executing, and this function is called from another thread, 
+         * this function will block until timeout() finished executing.
+         * In case this function is called called from within the timeout() thread, it will not block.
          */
         bool isArmed(TimerId timer_id) const;
 
         /**
          * Disable an armed timer.
          * @param timer_id The number of the timer, starting from zero.
+         * @note This function synchronises with timeout().
+         * In case timeout() is executing, and this function is called from another thread, 
+         * this function will block until timeout() finished executing.
+         * In case this function is called called from within the timeout() thread, it will not block.
          */
         bool killTimer(TimerId timer_id);
 
